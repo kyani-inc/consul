@@ -28,8 +28,6 @@ func New(config *consul.Config) (Environmenter, error) {
 }
 
 // Set calls the consul.Put() method to save a value.
-// This is incredibly bastardized to satisfy the interface.
-// Consider using the consul API for more power.
 func (env proEnv) Set(key, value string) error {
 	key = env.Namespace + key
 
@@ -42,12 +40,13 @@ func (env proEnv) Set(key, value string) error {
 }
 
 // Get calls the consul.Get() method to retrieve a value.
-// This is incredibly bastardized to satisfy the interface.
-// Consider using the consul API for more power.
 func (env proEnv) Get(key string) string {
 	key = env.Namespace + key
 
 	pair, _, err := env.consul.Get(key, &consul.QueryOptions{
+		// AllowStale: true is a set as an optimization technique,
+		// allowing for us to query the consul agent and potentially
+		// receive stale data.
 		AllowStale: true,
 	})
 
@@ -61,11 +60,10 @@ func (env proEnv) Get(key string) string {
 // List calls the consul.List() method to retrieve all values
 // from a particular namespace. For backwards compatability,
 // each KV Pair is formatted to match a standard k=v as per
-// os.Envion.
-// This is incredibly bastardized to satisfy the interface.
-// Consider using the consul API for more power.
+// os.Environ.
 func (env proEnv) List() []string {
 	pairs, _, err := env.consul.List(env.Namespace, &consul.QueryOptions{
+		// AllowStale: false forces List() to query the consul servers directly
 		AllowStale: false,
 	})
 
@@ -81,10 +79,6 @@ func (env proEnv) List() []string {
 	var p []string
 	for _, pair := range pairs {
 		p = append(p, fmtPair(pair))
-	}
-
-	if len(p) == 0 {
-		return []string{}
 	}
 
 	return p
