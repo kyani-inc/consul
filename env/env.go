@@ -1,4 +1,14 @@
-package env
+// Package Env allows developers to use the
+// [consul](https://github.com/hashicorp/consul) api
+// as a storage for environment variables. This package utilizes
+// build flags to allow developers to degrade their application
+// to a dev environment that relies on OS environment variables,
+// without the need to change their source code.
+//
+// At the production level this package abstracts out the
+// consul.KV() api and at the dev level it abstracts out
+// the core `os` package.
+package env // import "github.com/kyani-inc/consul/env"
 
 import (
 	consul "github.com/hashicorp/consul/api"
