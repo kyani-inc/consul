@@ -14,8 +14,8 @@ type devEnv struct {
 }
 
 // New returns an empty instance of devEnv
-func New(config consul.Config) (Environmenter, error) {
-	return devEnv{}, nil
+func New(config *consul.Config) (Environmenter, error) {
+	return env, nil
 }
 
 // Set will use os.Setenv to set an env variable
