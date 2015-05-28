@@ -21,6 +21,7 @@ type Environmenter interface {
 
 	// Set or change the namespace. Doesn't do anything in Dev.
 	SetNamespace(string) Environmenter
+	Namespace() string
 }
 
 // DefaultConfig() abstracts out the api.DefaultConfig call

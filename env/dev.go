@@ -10,12 +10,12 @@ import (
 )
 
 type devEnv struct {
-	Namespace string
+	namespace string
 }
 
 // New returns an empty instance of devEnv
 func New(config *consul.Config) (Environmenter, error) {
-	return env, nil
+	return devEnv{}, nil
 }
 
 // Set will use os.Setenv to set an env variable
@@ -38,6 +38,12 @@ func (devEnv) List() []string {
 }
 
 // Namespace in dev doesn't do much
-func (devEnv) SetNamespace(ns string) Environmenter {
+func (d devEnv) SetNamespace(ns string) Environmenter {
+	d.namespace = ns
+
 	return devEnv{}
+}
+
+func (env devEnv) Namespace() string {
+	return env.namespace
 }
