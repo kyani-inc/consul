@@ -1,6 +1,10 @@
 # consul
 A collection of abstractions that Kyäni uses to ease use with consul
 
+Links
+
+- [Discovery](consul/tree/master/discovery)
+
 ## Env
 
 Package Env allows developers to use the [consul](https://github.com/hashicorp/consul) api as a storage for environment variables. This package utilizes build flags to allow developers to degrade their application to a dev environment that relies on OS environment variables, without the need to change their source code.
