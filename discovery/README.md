@@ -8,13 +8,13 @@ Install the binary to `/usr/bin` or `/usr/local/bin`.
 
 ```
 [#] elb-discovery --help
-   --region, -r "us-east-1" aws region to query [$AWS_REGION]
-   --load-balancer-name     name of elb to query
-   --count "1"          Number of results to return. 0 returns all. Note: Any number that is *NOT* 1 returns as a json array.
-   --private-ip-only        If set, application will only return private IP Addresses.
-   --debug          Verbose: Turn on logging.
-   --help, -h           show help
-   --version, -v        print the version
+   --region, -r "us-east-1"    aws region to query [$AWS_REGION]
+   --load-balancer-name        name of elb to query
+   --count "1"                 Number of results to return. 0 returns all. Note: Any number that is *NOT* 1 returns as a json array.
+   --private-ip-only           If set, application will only return private IP Addresses.
+   --debug                     Verbose: Turn on logging.
+   --help, -h                  show help
+   --version, -v               print the version
 ```
 
 Example response:
