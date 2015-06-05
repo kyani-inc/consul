@@ -54,7 +54,7 @@ func (env proEnv) Get(key string) string {
 		return ""
 	}
 
-	return string(pair.Value)
+	return fmt.Sprintf("%s", pair.Value)
 }
 
 // List calls the consul.List() method to retrieve all values
