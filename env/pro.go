@@ -4,6 +4,7 @@ package env
 
 import (
 	"fmt"
+	"strings"
 
 	consul "github.com/hashicorp/consul/api"
 )
@@ -72,12 +73,18 @@ func (env proEnv) List() []string {
 	}
 
 	fmtPair := func(kvPair *consul.KVPair) string {
-		return fmt.Sprintf("%s=%s", kvPair.Key, kvPair.Value)
+		key := strings.Replace(kvPair.Key, env.Namespace(), "", -1)
+
+		return fmt.Sprintf("%s=%s", key, kvPair.Value)
 	}
 
 	// Iterate over the pairs and fmt them like os.Environ does (k=v)
 	var p []string
 	for _, pair := range pairs {
+		if pair.Key == env.Namespace() {
+			continue
+		}
+
 		p = append(p, fmtPair(pair))
 	}
 
@@ -86,7 +93,7 @@ func (env proEnv) List() []string {
 
 // Namespace allows you to set and change the namespace.
 func (env proEnv) SetNamespace(ns string) Environmenter {
-	env.namespace = ns
+	env.namespace = strings.TrimRight(ns, "/") + "/"
 	return env
 }
 
