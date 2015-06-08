@@ -4,12 +4,11 @@ A collection of abstractions that Kyäni uses to ease use with consul
 Links
 
 - [Discovery](https://github.com/kyani-inc/consul/tree/master/discovery)
+- [Env](#Env)
 
 ## Env
 
-Package Env allows developers to use the [consul](https://github.com/hashicorp/consul) api as a storage for environment variables. This package utilizes build flags to allow developers to degrade their application to a dev environment that relies on OS environment variables, without the need to change their source code.
-
-At the production level this package abstracts out the consul.KV() api and at the dev level it abstracts out the core `os` package.
+Package Env allows developers to use the [consul](https://github.com/hashicorp/consul) api as a storage for environment variables. This package attempts to use an available consul connection or silently falls back to OS Environment Variables.
 
 **Note**: This package is designed to be simplistic enough to work with both the `os` package and the [consul](https://github.com/hashicorp/consul) api.
 
@@ -27,13 +26,23 @@ The way we leverage Consul is each application has their own folder structure th
 
 We have chosen to break things into namespaces in order to support the fallback to OS environment variables where folders might not be supported. 
 
-###### In Dev
+Another use case we have is to still leverage folders but doing so inside of a namespace as such:
 
-- Namespaces in development are silently ignored. See Gotcha below.
+```
+namespace: app/app1
+key: db1/user
+key: db1/password
+```
+
+When this falls back to the OS level these are read as `db1.user` (See section below.)
+
+###### OS Support
+
+- Namespaces while using the OS Package are silently ignored. See Gotcha below.
 - Folders are supported by converting `/` to `.`
 
 **Example**:
-In dev you can have the following variables:
+When using the os you can have the following variables:
 
 ```
 DB.USER=root
@@ -93,30 +102,24 @@ func main() {
 
 The above example will work both in development using the `os` package and in production using the `consul` api.
 
-**Note**: When a client is created using `env.New()` the namespace is empty, this is true in both dev and production.
+**Note**: When a client is created using `env.New()` the namespace is empty, this is true when using both the OS package and the Consul API.
 
+##### Build Flags
 
-##### Running your application when using env
+This package has a build flag you can choose to enable that when set will notify you if the package is falling back to the OS package. This can be useful in troubleshooting if `env` is actually talking to your Consul cluster.
 
-As mentioned previously, env utilizes build flags to switch between the dev environments. As such the following methods will need to be adapted into your build process. Note that running in dev mode is the default option:
-
-**development** (No change):
-
-```
-go run main.go
-```
-
-**production**:
+Usage is as follows:
 
 ```
-go run -tags production main.go
+[#] go run -tags production main.go
+[#] go build -tags production .
 ```
 
 ##### Gotchas
 
-- In Dev, Namespaces are not supported, so if your application uses the same env name in two different namespaces only one will be utilized.
+- At the OS level, Namespaces are not supported, so if your application uses the same env name in two different namespaces only one will be utilized.
 
 ##### Todo
 
-- Tests
+- ~~Tests~~
 - Benchmarks
