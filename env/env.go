@@ -48,8 +48,8 @@ func (env Env) osCleanKey(key string) string {
 	// key shouldn't have the namespace but we'll remove it just in case
 	key = strings.Replace(key, env.namespace, "", -1)
 
-	// Convert '/' to '.'
-	key = strings.Replace(key, "/", ".", -1)
+	// Convert '/' to '___'
+	key = strings.Replace(key, "/", "___", -1)
 
 	// Trim "/"
 	key = strings.Trim(key, "/")
