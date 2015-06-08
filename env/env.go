@@ -70,7 +70,11 @@ func (env Env) Get(key string) string {
 		return env.osGet(key)
 	}
 
-	return fmt.Sprintf("%s", pair.Value)
+	if pair == nil {
+		return ""
+	}
+
+	return string(pair.Value)
 }
 
 func (env Env) osGet(key string) string {

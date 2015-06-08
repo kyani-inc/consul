@@ -1,9 +1,10 @@
 package env_test
 
 import (
-	"github.com/kyani-inc/consul/env"
 	"strings"
 	"testing"
+
+	"github.com/kyani-inc/consul/env"
 )
 
 func testSet(T *testing.T) {
@@ -42,6 +43,9 @@ func testGet(T *testing.T) {
 		"key":         "value",
 		"key/key":     "value",
 		"key/key/key": "value",
+		"key/key-key": "value",
+		"key_key":     "value",
+		"key.key":     "value",
 	}
 
 	cli, _ := env.New(env.DefaultConfig())
