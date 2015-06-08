@@ -34,19 +34,19 @@ key: db1/user
 key: db1/password
 ```
 
-When this falls back to the OS level these are read as `db1.user` (See section below.)
+When this falls back to the OS level these are read as `db1___user` (See section below.)
 
 ###### OS Support
 
 - Namespaces while using the OS Package are silently ignored. See Gotcha below.
-- Folders are supported by converting `/` to `.`
+- Folders are supported by converting `/` to `___` (3 Underscores)
 
 **Example**:
 When using the os you can have the following variables:
 
 ```
-DB.USER=root
-DB.PASSWORD=root
+DB___USER=root
+DB___PASSWORD=root
 ```
 
 You can then reference these as `env.Get("DB/USER")` and `env.Get("DB/PASSWORD")` respectively. This should allow you to best match your production setup.
