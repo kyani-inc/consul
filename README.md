@@ -131,6 +131,10 @@ func main() {
 
 The `env` package is designed so the majority of times you will only need to import `github.com/kyani-inc/consul/env`, but for the times you need more control you can import the Hashicorp API package and use a custom config.
 
+##### Full Example
+
+See the examples folder for a full working example using local Environment variables.
+
 
 ##### Build Flags
 
