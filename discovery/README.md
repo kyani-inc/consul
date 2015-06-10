@@ -45,6 +45,11 @@ The utility attempts three methods of retrieving AWS Credentials and they are at
 - `EnvProvider`: This method looks for the following environment variables: Access Key ID: AWS_ACCESS_KEY_ID or AWS_ACCESS_KEY - Secret Access Key: AWS_SECRET_ACCESS_KEY or AWS_SECRET_KEY
 - `SharedCredentialsProvider`: This method looks for an ini file located at ` $HOME/.aws/credentials` See [here](http://docs.aws.amazon.com/cli/latest/userguide/cli-chap-getting-started.html) for more info.
 
-### Why not use Atlas?
+### Examples
+
+For an example of how to use the json output see [example.sh](/example.sh). We use something similar in a system init script.
+
+
+#### Why not use Atlas?
 
 Atlas states that they will not always be free so we have developed this so there is no need to depend on Atlas.
