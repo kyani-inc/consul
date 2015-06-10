@@ -3,10 +3,10 @@ A collection of abstractions that Kyäni uses to ease use with consul.
 
 Links
 
-- [Discovery](https://github.com/kyani-inc/consul/tree/master/discovery)
-- [Env](#env)
+- [consul/discovery](https://github.com/kyani-inc/consul/tree/master/discovery)
+- [consul/env](#env)
 
-## Env
+## consul/env
 
 Package Env allows developers to use the [consul](https://github.com/hashicorp/consul) api as a storage for environment variables. This package attempts to use an available consul connection or silently falls back to OS Environment Variables.
 
