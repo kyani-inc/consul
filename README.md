@@ -1,16 +1,18 @@
 # consul
-A collection of abstractions that Kyäni uses to ease use with consul
+A collection of abstractions that Kyäni uses to ease use with consul.
 
 Links
 
 - [Discovery](https://github.com/kyani-inc/consul/tree/master/discovery)
-- [Env](#Env)
+- [Env](#env)
 
 ## Env
 
 Package Env allows developers to use the [consul](https://github.com/hashicorp/consul) api as a storage for environment variables. This package attempts to use an available consul connection or silently falls back to OS Environment Variables.
 
 **Note**: This package is designed to be simplistic enough to work with both the `os` package and the [consul](https://github.com/hashicorp/consul) api.
+
+[API Documentation](http://godoc.org/github.com/kyani-inc/consul/env)
 
 #### Env Installation
 
@@ -103,6 +105,32 @@ func main() {
 The above example will work both in development using the `os` package and in production using the `consul` api.
 
 **Note**: When a client is created using `env.New()` the namespace is empty, this is true when using both the OS package and the Consul API.
+
+#### Advanced Usage
+
+```
+package main
+
+import (
+    "github.com/kyani-inc/consul/env"
+    consul "github.com/hashicorp/consul/api"
+)
+
+func main() {
+    e, err := env.New(consul.Config{
+        HttpAuth: &consul.HttpBasicAuth{
+            Username: "me",
+            Password: "mypassword",
+        },
+        Token: "abc123",
+    })
+
+    // Follow the above tutorial from there.
+}
+```
+
+The `env` package is designed so the majority of times you will only need to import `github.com/kyani-inc/consul/env`, but for the times you need more control you can import the Hashicorp API package and use a custom config.
+
 
 ##### Build Flags
 
