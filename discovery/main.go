@@ -26,9 +26,9 @@ const (
 
 var (
 	creds = credentials.NewChainCredentials([]credentials.Provider{
-		&credentials.EC2RoleProvider{},
 		&credentials.EnvProvider{},
 		&credentials.SharedCredentialsProvider{},
+		&credentials.EC2RoleProvider{},
 	})
 	inDebug bool
 )
