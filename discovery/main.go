@@ -4,14 +4,18 @@ import (
 	"encoding/json"
 	"fmt"
 	"os"
+	"time"
 
 	"github.com/codegangsta/cli"
 
-	"github.com/awslabs/aws-sdk-go/aws"
-	"github.com/awslabs/aws-sdk-go/aws/awserr"
-	"github.com/awslabs/aws-sdk-go/aws/credentials"
-	"github.com/awslabs/aws-sdk-go/service/ec2"
-	"github.com/awslabs/aws-sdk-go/service/elb"
+	"github.com/aws/aws-sdk-go/aws"
+	"github.com/aws/aws-sdk-go/aws/awserr"
+	"github.com/aws/aws-sdk-go/aws/credentials"
+	"github.com/aws/aws-sdk-go/aws/credentials/ec2rolecreds"
+	"github.com/aws/aws-sdk-go/aws/ec2metadata"
+	"github.com/aws/aws-sdk-go/aws/session"
+	"github.com/aws/aws-sdk-go/service/ec2"
+	"github.com/aws/aws-sdk-go/service/elb"
 )
 
 const (
@@ -25,11 +29,17 @@ const (
 )
 
 var (
+	sess = session.New()
+
 	creds = credentials.NewChainCredentials([]credentials.Provider{
 		&credentials.EnvProvider{},
 		&credentials.SharedCredentialsProvider{},
-		&credentials.EC2RoleProvider{},
+		&ec2rolecreds.EC2RoleProvider{
+			Client:       ec2metadata.New(sess),
+			ExpiryWindow: 5 * time.Minute,
+		},
 	})
+
 	inDebug bool
 )
 
@@ -96,7 +106,7 @@ func main() {
 
 		var cfg config
 		cfg.Config = &aws.Config{
-			Region:      c.String("region"),
+			Region:      aws.String(c.String("region")),
 			Credentials: creds,
 		}
 
@@ -160,7 +170,7 @@ func (cfg config) FetchIP(instances []*elb.InstanceState, count int, isPrivate b
 			break
 		}
 
-		ip, err := cfg.getIP(instances[i].InstanceID, isPrivate)
+		ip, err := cfg.getIP(instances[i].InstanceId, isPrivate)
 		if err != nil {
 			log(fmt.Sprint(err.Error()))
 			// We threw an error so we'll recurse again.
@@ -176,10 +186,10 @@ func (cfg config) FetchIP(instances []*elb.InstanceState, count int, isPrivate b
 }
 
 func (cfg config) getIP(instanceID *string, isPrivate bool) (*string, error) {
-	svc := ec2.New(cfg.Config)
+	svc := ec2.New(sess, cfg.Config)
 
 	params := &ec2.DescribeInstancesInput{
-		InstanceIDs: []*string{
+		InstanceIds: []*string{
 			instanceID,
 		},
 	}
@@ -200,10 +210,10 @@ func (cfg config) getIP(instanceID *string, isPrivate bool) (*string, error) {
 
 	instance := resp.Reservations[0].Instances[0]
 	if isPrivate {
-		return instance.PrivateIPAddress, err
+		return instance.PrivateIpAddress, err
 	}
 
-	return instance.PublicIPAddress, err
+	return instance.PublicIpAddress, err
 }
 
 // validation validates arguments before continuing.
@@ -226,7 +236,7 @@ func validation(c *cli.Context) error {
 
 // ELBInstances takes an ELB name and returns all instances attached to the ELB.
 func (cfg config) ELBInstances(name string) (*elb.DescribeInstanceHealthOutput, error) {
-	svc := elb.New(cfg.Config)
+	svc := elb.New(sess, cfg.Config)
 
 	params := &elb.DescribeInstanceHealthInput{
 		LoadBalancerName: aws.String(name),
