@@ -78,8 +78,6 @@ func (env Env) Get(key string) string {
 }
 
 func (env Env) osGet(key string) string {
-	debug("[env] Falling back to os.Getenv().")
-
 	return os.Getenv(env.osCleanKey(key))
 }
 
